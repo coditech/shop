@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {withRouter, Route, Switch} from 'react-router-dom';
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import "./App.css";
+import ProductsPage from './pages/ProductsPage';
+import ProductDetailsPage from './pages/ProductDetailsPage';
+import LoginPage from './pages/LoginPage';
+import SecuredRoute from './components/SecuredRoute'
 
-function App() {
+class App extends React.Component{
+  state={
+    token:null
+  }
+  updateToken  =(token)=>{
+    this.setState({token});
+  }
+  render(){
+    
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <Switch>
+        <Route exact path="/" render={(props)=><HomePage {...props}/>}/>
+        <SecuredRoute  path="/products" component={ProductsPage} token={this.state.token}/>
+        <SecuredRoute  path="/productdetail/:id" token={this.state.token} component={ProductDetailsPage}/>
+        <Route  path="/login" render={(props=><LoginPage updateToken={this.updateToken}/>)}/>
+      </Switch>
+
+      <Footer />
+    </>
   );
+  }
 }
 
-export default App;
+export default withRouter(App);
